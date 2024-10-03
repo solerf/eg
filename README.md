@@ -1,0 +1,2 @@
+# Practicing rust with macroquad
+
