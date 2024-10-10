@@ -114,15 +114,22 @@ async fn main() {
                         if answer == calc.result {
                             draw_text(answer.as_str(), initial_x, screen_y + (card_height / 1.5), card_font_size, GREEN);
                         } else {
-                            draw_text(answer.as_str(), initial_x, screen_y + (card_height / 1.5), card_font_size, RED);
+                            let dimensions = draw_text(answer.as_str(), initial_x, screen_y + (card_height / 1.5), card_font_size, RED);
+                            let correct = format!("({})", calc.result);
+                            draw_text(&correct, initial_x + dimensions.width, screen_y + (card_height / 1.5), card_font_size / 2.0, GREEN);
                         }
                         game_over = true;
                     } else {
                         draw_text(answer.as_str(), initial_x, screen_y + (card_height / 1.5), card_font_size, GOLD);
                     }
                 }
-                _ => {
-                    draw_text("?", initial_x, screen_y + (card_height / 1.5), card_font_size, BLACK);
+                i => {
+                    if i == 4 {
+                        let question = "?";
+                        draw_text(&question.repeat(calc.result.len()), initial_x, screen_y + (card_height / 1.5), card_font_size, BLACK);
+                    } else {
+                        draw_text("?", initial_x, screen_y + (card_height / 1.5), card_font_size, BLACK);
+                    }
                 }
             }
         }
