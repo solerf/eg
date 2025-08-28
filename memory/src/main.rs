@@ -41,7 +41,10 @@ async fn main() {
         if !game_over {
             if is_mouse_button_pressed(MouseButton::Left) {
                 let (x_mouse, y_mouse) = mouse_position();
-                let clicked = cards.clone().into_iter().find(|c| c.clicked_at(x_mouse, y_mouse));
+                let clicked = cards
+                    .clone()
+                    .into_iter()
+                    .find(|c| c.clicked_at(x_mouse, y_mouse));
 
                 if clicked.is_some() {
                     if current_opens.len() == 2 {
@@ -71,7 +74,13 @@ async fn main() {
 
         if found_pairs.len() == MAX_CARDS + 1 {
             game_over = true;
-            draw_text("YOU WIN!!!", (SCREEN_WIDTH / 7) as f32, (SCREEN_HEIGHT / 2) as f32, (SCREEN_WIDTH / 7) as f32, GREEN);
+            draw_text(
+                "YOU WIN!!!",
+                (SCREEN_WIDTH / 7) as f32,
+                (SCREEN_HEIGHT / 2) as f32,
+                (SCREEN_WIDTH / 7) as f32,
+                GREEN,
+            );
         }
 
         next_frame().await;
@@ -108,13 +117,11 @@ fn make_cards(images: Vec<(String, Texture2D)>) -> Vec<Card> {
 }
 
 async fn load_images() -> Vec<(String, Texture2D)> {
-    let mut images_path: Vec<String> = fs::read_dir("images/round")
+    let images_path: Vec<String> = fs::read_dir("images/round")
         .unwrap()
         .map(|r| r.unwrap().path())
         .map(|r| r.clone().to_str().unwrap().to_owned())
         .collect();
-
-    images_path.shuffle();
 
     let mut images = Vec::with_capacity(MAX_CARDS);
     for i in &images_path[0..=MAX_CARDS] {
@@ -137,7 +144,6 @@ struct Card {
     height: f32,
 }
 
-
 impl Card {
     fn draw(self: &Self, is_open: bool, is_found: bool) {
         if is_open || is_found {
@@ -150,7 +156,8 @@ impl Card {
             if is_found {
                 draw_rectangle(self.x, self.y, CARD_WIDTH, CARD_HEIGHT, PINK); // open
             } else {
-                draw_rectangle(self.x, self.y, CARD_WIDTH, CARD_HEIGHT, SKYBLUE); // open
+                draw_rectangle(self.x, self.y, CARD_WIDTH, CARD_HEIGHT, SKYBLUE);
+                // open
             }
             draw_texture(&self.texture, x_img, y_img, WHITE);
         } else {
@@ -167,8 +174,18 @@ impl Card {
     }
 
     fn clicked_at(self: &Self, x_target: f32, y_target: f32) -> bool {
-        let mouse_rect = Rect { x: x_target, y: y_target, w: 1.0, h: 1.0 };
-        let card_rect = Rect { x: self.x, y: self.y, w: CARD_WIDTH, h: CARD_HEIGHT };
+        let mouse_rect = Rect {
+            x: x_target,
+            y: y_target,
+            w: 1.0,
+            h: 1.0,
+        };
+        let card_rect = Rect {
+            x: self.x,
+            y: self.y,
+            w: CARD_WIDTH,
+            h: CARD_HEIGHT,
+        };
         card_rect.intersect(mouse_rect).is_some()
     }
 }
